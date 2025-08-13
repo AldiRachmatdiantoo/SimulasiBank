@@ -38,6 +38,15 @@ fun checkSqlTable(stmt: PreparedStatement, input: String, getStringFromSql: Stri
     }
     return false
 }
+fun checkGetSql(stmt: PreparedStatement, getStringFromSql: String): String{
+    val rs = stmt.executeQuery()
+    if (rs.next()){
+        val get = rs.getString(getStringFromSql)
+        return get
+    }
+    return "-"
+
+}
 fun handle(output: OutputsOperation) {
     when(output){
         is OutputsOperation.Success -> println("\nSuccess: ${output.msg}\n")
