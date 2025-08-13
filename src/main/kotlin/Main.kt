@@ -6,11 +6,10 @@ fun main() {
     val toProgram = checkYesOrNo("masuk ke aplikasi CLI Bank? ")
     if (!toProgram) return println("Terima kasih!")
 
-
     while (true){
         Login().loginAcc()
         println("\nTerima Kasih!")
-        break
+        return
     }
 }
 fun checkYesOrNo(text: String): Boolean{
@@ -61,4 +60,18 @@ fun remainingChance(): Int{
         exitProcess(0)
     }
     return chance
+}
+fun <T>checkList(text: String, judul: String, list: MutableList<T>): String{
+    while (true){
+        println("\n=====${judul.uppercase()}=====")
+        list.forEachIndexed { index, value ->
+            println("${index+1}.$value")
+        }
+        print("\n$text")
+        val choice = readln().lowercase()
+        if (list.any { it == choice }) return choice
+
+        handle(OutputsOperation.Error("Tolong input dengan sesuai!"))
+        continue
+    }
 }

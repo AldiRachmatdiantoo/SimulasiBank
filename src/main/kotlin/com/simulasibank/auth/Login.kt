@@ -28,7 +28,7 @@ class Login {
                 Menu(conn).menuBank(user)
             }
 
-            break
+            return
         }
     }
     fun checkUsername(): String{
