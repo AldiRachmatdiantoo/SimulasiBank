@@ -70,7 +70,7 @@ fun <T>checkList(text: String, judul: String, list: MutableList<T>): String{
             println("${index+1}.$value")
         }
         print("\n$text")
-        val choice = readln().lowercase()
+        val choice = readln()
         if (list.any { it == choice }) return choice
 
         handle(OutputsOperation.Error("Tolong input dengan sesuai!"))

@@ -66,7 +66,8 @@ class Profile(val user: User, val conn: Connection) {
             val saldo = rs.getInt("saldo")
             val email = rs.getString("email")
             if (name != user.name) {
-                userListRek.add(User(name,email,noRek,saldo))
+                val toWhere = User(name,email,noRek,saldo)
+                userListRek.add(toWhere)
             }
         }
         userListRek.forEachIndexed { index, value ->
