@@ -11,6 +11,8 @@ fun main() {
         println("\nTerima Kasih!")
         return
     }
+
+
 }
 fun checkYesOrNo(text: String): Boolean{
     print(text)

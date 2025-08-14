@@ -1,9 +1,22 @@
 package com.simulasibank.dashboard
 
-class OrganizeBank {
-    fun transfer(){}
-    fun tarik(){}
-    fun tambahRekening(){}
-    fun setorUang(){}
+import com.simulasibank.auth.User
+import java.sql.Connection
+import checkList
+
+class OrganizeBank(val conn: Connection, val user: User) {
+    fun transfer(){
+
+
+    }
+    fun tarik(){
+
+    }
+    fun tambahRekening(){
+
+    }
+    fun setorUang(){
+
+    }
 
 }

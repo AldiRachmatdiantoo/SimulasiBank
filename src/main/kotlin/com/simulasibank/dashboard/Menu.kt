@@ -1,10 +1,10 @@
 package com.simulasibank.dashboard
 
 import com.simulasibank.auth.User
-import java.sql.Connection
 import checkList
+import java.sql.Connection
 
-class Menu(connection: Connection) {
+class Menu(val conn: Connection) {
     val listMenu = mutableListOf(
         "transfer",
         "tarik",
@@ -13,21 +13,20 @@ class Menu(connection: Connection) {
         "cek akun",
         "keluar"
     )
-    val conn = connection
     fun menuBank(user: User){
         while (true) {
             val chooseMenu = checkList("Pilih: ", "menu", listMenu)
-            val continueOrNot = organizeInputMenu(chooseMenu)
+            val continueOrNot = organizeInputMenu(chooseMenu, user)
             if (!continueOrNot) return
         }
     }
-    fun organizeInputMenu(chooseMenu: String): Boolean{
+    fun organizeInputMenu(chooseMenu: String, user: User): Boolean{
         when(chooseMenu){
-            listMenu[0] -> OrganizeBank().transfer()
-            listMenu[1] -> OrganizeBank().tarik()
-            listMenu[2] -> OrganizeBank().tambahRekening()
-            listMenu[3] -> OrganizeBank().setorUang()
-            listMenu[4] -> Profile().menuAkun()
+            listMenu[0] -> OrganizeBank(conn, user).transfer()
+            listMenu[1] -> OrganizeBank(conn, user).tarik()
+            listMenu[2] -> OrganizeBank(conn, user).tambahRekening()
+            listMenu[3] -> OrganizeBank(conn, user).setorUang()
+            listMenu[4] -> Profile(user, conn).menuAkun()
             listMenu[5] -> return false
         }
         return true
