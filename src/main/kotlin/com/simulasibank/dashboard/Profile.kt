@@ -14,6 +14,8 @@ class Profile(val user: User, val conn: Connection) {
         "kembali"
     )
     val userListRek = mutableListOf<User>()
+    val mutasiList = mutableListOf<Mutasi>()
+    val userListRekMap = mutableMapOf<String, Int>()
     fun menuAkun(){
         while (true) {
             val chooseMenu = checkList("Pilih: ", "akun saya", listMenuAkun)
@@ -36,7 +38,7 @@ class Profile(val user: User, val conn: Connection) {
                 readln()
                 return
             }
-            listMenuAkun[2] -> return
+            listMenuAkun[2] -> mutasiRekening()
 //            listMenuAkun[3] -> tagihan()
             listMenuAkun[4] -> {
                 listRekening()
@@ -50,12 +52,12 @@ class Profile(val user: User, val conn: Connection) {
         println("Nama Pemilik: ${user.name}\nNo.Rekening: ${user.noRekening}\nEmail: ${user.email}\n")
 
     }
-    fun saldo(){
+    fun saldo(): Int{
         println("\n=====SALDO=====")
-        println("Saldo anda: ${user.saldo}")
-
+        println("Saldo anda: Rp.${user.saldo}")
+        return user.saldo
     }
-    fun listRekening(){
+    fun listRekening(): MutableMap<String, Int>{
         val stmtCheckListRekening = conn.prepareStatement(
             "SELECT * FROM users LEFT JOIN wallet ON users.norekening = wallet.noRekening"
         )
@@ -68,10 +70,18 @@ class Profile(val user: User, val conn: Connection) {
             if (name != user.name) {
                 val toWhere = User(name,email,noRek,saldo)
                 userListRek.add(toWhere)
+                userListRekMap.put(toWhere.name, toWhere.noRekening)
             }
         }
         userListRek.forEachIndexed { index, value ->
             println("${index+1}. Nama: ${value.name} | No.Rekening: ${value.noRekening}")
+        }
+        return userListRekMap
+    }
+    fun mutasiRekening(){
+        println("\n=====MUTASI REKENING=====")
+        mutasiList.forEachIndexed { index, value ->
+            println("${index+1}.$value")
         }
     }
 

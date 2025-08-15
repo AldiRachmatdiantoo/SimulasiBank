@@ -77,3 +77,10 @@ fun <T>checkList(text: String, judul: String, list: MutableList<T>): String{
         continue
     }
 }
+fun handleMapList(text: String, list: MutableMap<String, Int>): String{
+    print(text)
+    val input = readln()
+    if (list.keys.any { it == input }) return input
+    println("Nama tidak ada!")
+    return "-"
+}

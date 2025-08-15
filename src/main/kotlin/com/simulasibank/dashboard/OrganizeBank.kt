@@ -2,68 +2,46 @@ package com.simulasibank.dashboard
 
 import com.simulasibank.auth.User
 import java.sql.Connection
-import checkList
-import checkNullOrBlank
-import handle
+import handleMapList
+import java.sql.Date
+import java.time.LocalDate
 
 class OrganizeBank(val conn: Connection, val user: User) {
-    val listWithRekening = mutableMapOf<String, Int>()
-
-
-
 
     fun transfer(){
-        val stmt = conn.prepareStatement(
-            "SELECT name, norekening FROM users"
-        )
-        val rs = stmt.executeQuery()
-        while (rs.next()){
-            val peopleName = rs.getString("name")
-            val peopleNoRek = rs.getInt("norekening")
-            if (peopleName != user.name){
-                listWithRekening.put(peopleName, peopleNoRek)
-            }
+        val listRekening = Profile(user, conn).listRekening()
+        val inputName = handleMapList("Pilih Rekening: ", listRekening)
+        if (inputName != "-") {
+            val convertToValue = listRekening.getValue(inputName)
+            Transfer(convertToValue, user).inputHowMuch()
         }
-        val input = checkList("Masukkan nama: ", "LIST REKENING", listWithRekening.keys.toMutableList())
-        val outputFromInput = listWithRekening.getValue(input)
-
-        val jumlahTransaksi = checkNullOrBlank("Masukkan jumlah Transaksi: ")
-        val jumlahTransaksiToInt = jumlahTransaksi.toInt()
-
-        try {
-            if (user.saldo < jumlahTransaksiToInt) throw Exception("saldo tidak cukup!")
-            user.saldo -= jumlahTransaksiToInt
-        } catch (e: Exception){
-            handle(OutputsOperation.Error("${e.message}"))
-            print("continue..")
-            readln()
-            return
-        }
-
-
-        val stmtForSaldo = conn.prepareStatement(
-            "UPDATE users SET saldo = ? WHERE norekening = ?"
-        )
-        stmtForSaldo.setInt(1, user.saldo)
-        stmtForSaldo.setInt(2, user.noRekening)
-        stmtForSaldo.executeUpdate()
-        handle(OutputsOperation.Success("Berhasil mentransfer!"))
         return
-
-
-
-
-
-
     }
-    fun tarik(){
+    fun tarik(){}
+    fun tambahRekening(){}
+    fun setorUang(){}
 
-    }
-    fun tambahRekening(){
+    //no rekening, tanggal Transaksi, metode transaksi, keterangan transaksi, jumlah transaksi, sisa saldo
+    fun cetakMutasi(
+        noRekening: Int,
+        tanggalTransaksi: LocalDate,
+        metodeTransaksi: String,
+        keteranganTransaksi: String,
+        jumlahTransaksi: Int,
+        sisaSaldo: Int
+    ){
+        val stmt = conn.prepareStatement(
+            "INSERT INTO wallet (noRekening, tanggalTransaksi, metodeTransaksi, keteranganTransaksi, jumlahTransaksi, sisaSaldo) VALUES (?,?,?,?,?,?)"
+        )
+        stmt.setInt(1, noRekening)
+        stmt.setDate(2, Date.valueOf(tanggalTransaksi))
+        stmt.setString(3, metodeTransaksi)
+        stmt.setString(4, keteranganTransaksi)
+        stmt.setInt(5, jumlahTransaksi)
+        stmt.setInt(6, sisaSaldo)
 
-    }
-    fun setorUang(){
-
+        stmt.executeUpdate()
+        Mutasi(noRekening, tanggalTransaksi, metodeTransaksi, keteranganTransaksi, jumlahTransaksi, sisaSaldo)
     }
 
 }
