@@ -14,7 +14,7 @@ class Transfer(val rekeningTujuan: Int, val user: User) {
     )
     val conn = db.getConnection()
     fun inputHowMuch(){
-        var mySaldo = user.saldo
+        var mySaldo = Profile(user,conn).saldo()
         val insertMoney = checkNullOrBlank("masukkan nominal: ").toInt()
         try {
             if (mySaldo < insertMoney) throw Exception("Saldo Tidak cukup!")
@@ -25,7 +25,7 @@ class Transfer(val rekeningTujuan: Int, val user: User) {
             val keteranganTransaksi = checkNullOrBlank("keterangan: ")
             val metodeTransaksi = checkNullOrBlank("Pembayaran memakai: ")
             OrganizeBank(conn, user).cetakMutasi(
-                rekeningTujuan,
+                user.noRekening,
                 date,
                 metodeTransaksi,
                 keteranganTransaksi,

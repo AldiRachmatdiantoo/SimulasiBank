@@ -3,7 +3,6 @@ package com.simulasibank.dashboard
 import checkList
 import com.simulasibank.auth.User
 import java.sql.Connection
-import java.sql.Date
 
 class Profile(val user: User, val conn: Connection) {
     val listMenuAkun = mutableListOf(
@@ -55,8 +54,17 @@ class Profile(val user: User, val conn: Connection) {
     }
     fun saldo(): Int{
         println("\n=====SALDO=====")
-        println("Saldo anda: Rp.${user.saldo}")
-        return user.saldo
+        val stmt = conn.prepareStatement(
+            "SELECT saldo FROM users WHERE norekening = ?"
+        )
+        stmt.setInt(1, user.noRekening)
+        val rs = stmt.executeQuery()
+        if (rs.next()){
+            val saldoNow = rs.getInt("saldo")
+            println("Saldo Anda: Rp.$saldoNow")
+            return saldoNow
+        }
+        return 0
     }
     fun listRekening(): MutableMap<String, Int>{
         val stmtCheckListRekening = conn.prepareStatement(
@@ -86,7 +94,7 @@ class Profile(val user: User, val conn: Connection) {
        )
         stmt.setInt(1,user.noRekening)
         val rs = stmt.executeQuery()
-        if (rs.next()){
+        while (rs.next()){
             val noRekening = rs.getInt("noRekening")
             val tglTransaksi = rs.getDate("tanggalTransaksi")
             val metode = rs.getString("metodeTransaksi")
@@ -94,10 +102,10 @@ class Profile(val user: User, val conn: Connection) {
             val jumlah = rs.getInt("jumlahTransaksi")
             val sisa = rs.getInt("sisaSaldo")
             val tglTransaksiLocal = tglTransaksi.toLocalDate()
-            if (noRekening != user.noRekening){
-                val toWhere = Mutasi(noRekening, tglTransaksiLocal,metode,keterangan,jumlah,sisa)
-                mutasiList.add(toWhere)
-            }
+
+            val toWhere = Mutasi(noRekening, tglTransaksiLocal,metode,keterangan,jumlah,sisa)
+            mutasiList.add(toWhere)
+
         }
         mutasiList.forEachIndexed { index, value ->
             println("${index+1}.$value")
