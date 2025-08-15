@@ -41,7 +41,7 @@ class OrganizeBank(val conn: Connection, val user: User) {
         stmt.setInt(6, sisaSaldo)
 
         stmt.executeUpdate()
-        Mutasi(noRekening, tanggalTransaksi, metodeTransaksi, keteranganTransaksi, jumlahTransaksi, sisaSaldo)
+
     }
 
 }

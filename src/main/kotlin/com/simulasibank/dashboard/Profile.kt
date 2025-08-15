@@ -3,6 +3,7 @@ package com.simulasibank.dashboard
 import checkList
 import com.simulasibank.auth.User
 import java.sql.Connection
+import java.sql.Date
 
 class Profile(val user: User, val conn: Connection) {
     val listMenuAkun = mutableListOf(
@@ -80,9 +81,28 @@ class Profile(val user: User, val conn: Connection) {
     }
     fun mutasiRekening(){
         println("\n=====MUTASI REKENING=====")
+       val stmt = conn.prepareStatement(
+           "SELECT * FROM wallet WHERE noRekening = ?"
+       )
+        stmt.setInt(1,user.noRekening)
+        val rs = stmt.executeQuery()
+        if (rs.next()){
+            val noRekening = rs.getInt("noRekening")
+            val tglTransaksi = rs.getDate("tanggalTransaksi")
+            val metode = rs.getString("metodeTransaksi")
+            val keterangan = rs.getString("keteranganTransaksi")
+            val jumlah = rs.getInt("jumlahTransaksi")
+            val sisa = rs.getInt("sisaSaldo")
+            val tglTransaksiLocal = tglTransaksi.toLocalDate()
+            if (noRekening != user.noRekening){
+                val toWhere = Mutasi(noRekening, tglTransaksiLocal,metode,keterangan,jumlah,sisa)
+                mutasiList.add(toWhere)
+            }
+        }
         mutasiList.forEachIndexed { index, value ->
             println("${index+1}.$value")
         }
+
     }
 
 }

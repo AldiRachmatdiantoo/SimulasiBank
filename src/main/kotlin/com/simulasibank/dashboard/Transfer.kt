@@ -14,7 +14,7 @@ class Transfer(val rekeningTujuan: Int, val user: User) {
     )
     val conn = db.getConnection()
     fun inputHowMuch(){
-        var mySaldo = Profile(user, conn).saldo()
+        var mySaldo = user.saldo
         val insertMoney = checkNullOrBlank("masukkan nominal: ").toInt()
         try {
             if (mySaldo < insertMoney) throw Exception("Saldo Tidak cukup!")
@@ -32,11 +32,10 @@ class Transfer(val rekeningTujuan: Int, val user: User) {
                 insertMoney,
                 mySaldo
                 )
-            return
+            handle(OutputsOperation.Success("Transfer Berhasil!"))
         } catch (e: Exception){
             handle(OutputsOperation.Error("${e.message}"))
         }
-        handle(OutputsOperation.Success("Transfer Berhasil!"))
 
     }
     fun transferTransaksi(mySaldo: Int){
